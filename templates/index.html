@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<ul class="post-list">
+{% for p in posts %}
+  <li>
+    <a href="{{ root }}/posts/{{ p.slug }}.html">
+      <span class="when">{{ p.date_ko }} 주말</span>
+      <span class="ttl">{{ p.title }}</span>
+      <span class="sum">{{ p.summary }}</span>
+    </a>
+  </li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} | {{ site.title }}{% endblock %}
+{% block desc %}{{ post.summary }}{% endblock %}
+{% block content %}
+<article class="post">
+  <p class="when">{{ post.date_ko }} 주말</p>
+  <h1>{{ post.title }}</h1>
+  {% if post.tags %}<p class="tags">{% for t in post.tags %}<span>#{{ t }}</span>{% endfor %}</p>{% endif %}
+  <div class="body">{{ post.html|safe }}</div>
+  <p class="back"><a href="{{ root }}/index.html">지난 주말 글 보기</a></p>
+</article>
+{% endblock %}

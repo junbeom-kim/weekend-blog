@@ -1,0 +1,60 @@
+# 매주 목요일 저녁(한국시간 19:47)에 이번 주말 글을 만들어 GitHub Pages에 배포
+name: weekly-post
+
+on:
+  schedule:
+    - cron: "47 10 * * 4"   # UTC 기준. 10:47 UTC = 19:47 KST
+  workflow_dispatch:         # Actions 탭에서 수동 실행 버튼
+
+# 수동 실행과 예약 실행이 겹치면 git push 가 충돌하므로 한 번에 하나만 돌린다
+concurrency:
+  group: weekly-post
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+
+      - name: 1. 행사 수집
+        env:
+          TOURAPI_SERVICE_KEY: ${{ secrets.TOURAPI_SERVICE_KEY }}
+        run: python -m scripts.fetch_events
+
+      - name: 2. 글 작성
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m scripts.write_post
+
+      - name: 3. 사이트 빌드
+        run: python -m scripts.build_site
+
+      - name: 데이터와 글을 저장소에 기록
+        run: |
+          git config user.name "weekend-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data posts
+          git commit -m "weekly post $(date +%F)" || echo "변경 없음"
+          git push
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/deploy-pages@v4
