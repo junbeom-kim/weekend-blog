@@ -3,7 +3,7 @@
 SITE = {
     "title": "이번 주말 어디",
     "tagline": "공공데이터로 고르는 이번 주말 행사와 축제",
-    "base_url": "https://example.github.io/weekend-blog",  # 배포 후 실제 주소로 교체
+    "base_url": "https://junbeom-kim.github.io/weekend-blog",
     "author": "JB",
 }
 

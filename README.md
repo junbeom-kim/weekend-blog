@@ -13,7 +13,7 @@ scripts/
   build_site.py      3단계  posts/*.md -> site/ (HTML, sitemap.xml)
 prompts/weekly_post.md     글쓰기 규칙. 글 품질은 대부분 여기서 결정됨
 templates/                 HTML 템플릿과 CSS
-.github/workflows/weekly.yml  매주 목요일 19:47(KST) 1~3단계 실행 후 GitHub Pages 배포
+.github/workflows/weekly.yml  매주 목요일 19:47(KST) 1~3단계 실행 후 data, posts 커밋 (현재 검수 모드, 배포 안 함)
 ```
 
 흐름: fetch_events -> (data json) -> write_post -> (post md) -> build_site -> (site html) -> 배포

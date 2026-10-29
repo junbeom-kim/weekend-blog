@@ -1,4 +1,6 @@
-# 매주 목요일 저녁(한국시간 19:47)에 이번 주말 글을 만들어 GitHub Pages에 배포
+# 매주 목요일 저녁(한국시간 19:47)에 이번 주말 글을 만들어 저장소에 커밋
+# 검수 모드: 배포는 하지 않는다. 글을 확인하고 프롬프트가 안정되면
+# upload-pages-artifact 단계와 deploy 잡, pages/id-token 권한을 되살려 자동 배포로 전환한다.
 name: weekly-post
 
 on:
@@ -13,8 +15,6 @@ concurrency:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   build:
@@ -36,7 +36,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python -m scripts.write_post
 
-      - name: 3. 사이트 빌드
+      - name: 3. 사이트 빌드 (렌더링 확인용, 배포 안 함)
         run: python -m scripts.build_site
 
       - name: 데이터와 글을 저장소에 기록
@@ -47,14 +47,3 @@ jobs:
           git commit -m "weekly post $(date +%F)" || echo "변경 없음"
           git push
 
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-    steps:
-      - uses: actions/deploy-pages@v4
